@@ -1,13 +1,18 @@
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    [Header("Ref and Vars")]
     InputManager inputManager;
     // Vector3 moveDirection;
     // Transform cameraGameobject;
     // Rigidbody playerRb;
     // float movementSpeed = 1f;
-    float rotationSpeed = 13f;
+    float rotationSpeed = 13f; 
+
     
     Rigidbody droneRb;
     public float upForce;
@@ -25,15 +30,40 @@ public class PlayerMovement : MonoBehaviour
     // public Transform targetFollowGameObject;
     // public Transform child;
     // private Quaternion initialTargetFollowRotation;
+    PlayerControllerManager playerControllerManager;
+
+    [Header("Health system")]
+    public float maxHealth = 150.0f;
+    public float currentHealth;
+    public Slider healthBar;
+    public GameObject uiCanvas;
+
+    [Header("Photon vars")]
+    PhotonView view;
 
     void Awake() {
+
         inputManager = GetComponent<InputManager>();
         // playerRb = GetComponent<Rigidbody>();
         droneRb = GetComponent<Rigidbody>();
+        currentHealth = maxHealth;
+        view = GetComponent<PhotonView>();
+        playerControllerManager = PhotonView.Find((int)view.InstantiationData[0]).GetComponent<PlayerControllerManager>();
+        healthBar.minValue = 0f;
+        healthBar.maxValue = maxHealth;
+        healthBar.value = currentHealth;
         // cameraGameobject = Camera.main.transform;
         // initialTargetFollowRotation = targetFollowGameObject.localRotation;
     }
 
+    void Start()
+    {
+        if (!view.IsMine)
+        {
+            Destroy(droneRb);
+            Destroy(uiCanvas);
+        }
+    }
     public void HandleAllMovements()
     {
         // HandleMovement();
@@ -194,4 +224,35 @@ public class PlayerMovement : MonoBehaviour
             tiltAmountSideways = Mathf.SmoothDamp(tiltAmountSideways, 0, ref tiltAmountVelocity, 0.1f);
         }
     }
+
+    public void ApplyDamage(float damageValue)
+    {
+        view.RPC("RPC_TakeDamage", RpcTarget.All, damageValue);
+    }
+
+    [PunRPC]
+    void RPC_TakeDamage(float damage)
+    {
+
+         Debug.Log("RPC_TakeDamage called with damage: " + damage);
+         
+        if (!view.IsMine)
+        return;
+
+        currentHealth -= damage;
+        healthBar.value = currentHealth;
+        Debug.Log("Damage taken: " + damage);
+        Debug.Log("Current health: " + currentHealth);
+
+        if(currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        playerControllerManager.Die();
+    }
+
 }

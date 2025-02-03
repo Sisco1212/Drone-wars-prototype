@@ -10,6 +10,9 @@ public class InputManager : MonoBehaviour
     public float horizontalInput;
     public float rotationVerticalInput;
     public float rotationHorizontalInput;
+    public bool fireInput;
+    public bool reloadInput;
+    public bool scopeInput;
 
 
    // void Awake() 
@@ -24,6 +27,11 @@ public class InputManager : MonoBehaviour
             playerControls = new PlayerControls();
             playerControls.PlayerMovement.Movement.performed += i => movementInput = i.ReadValue<Vector2>(); 
             playerControls.PlayerMovement.Look.performed += i => rotationInput = i.ReadValue<Vector2>();
+            playerControls.PlayerActions.Fire.performed += i => fireInput = true;
+            playerControls.PlayerActions.Fire.canceled += i => fireInput = false;
+            playerControls.PlayerActions.Reload.performed += i => reloadInput = true;
+            playerControls.PlayerActions.Scope.performed += i => scopeInput = true;
+            playerControls.PlayerActions.Scope.canceled += i => scopeInput = false;
         }
 
         playerControls.Enable();
