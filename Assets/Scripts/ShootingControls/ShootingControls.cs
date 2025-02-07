@@ -14,6 +14,7 @@ public class ShootingControls : MonoBehaviour
     public float nextFireTime = 0f;
     public Transform firePoint;
     public bool isShooting;
+    public int playerTeam;
 
     [Header("Reload")]
     public int maxAmmo = 30;
@@ -36,6 +37,12 @@ public class ShootingControls : MonoBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         audioSource = GetComponent<AudioSource>();
         view = GetComponent<PhotonView>();
+
+        if (view.Owner.CustomProperties.ContainsKey("Team"))
+        {
+            int team = (int)view.Owner.CustomProperties["Team"];
+            playerTeam = team;
+        }
     }
 
 
@@ -88,7 +95,7 @@ public class ShootingControls : MonoBehaviour
 
     PlayerMovement playerMovementDamage = hit.collider.GetComponentInParent<PlayerMovement>();
 
-    if (playerMovementDamage != null)
+    if (playerMovementDamage != null && playerMovementDamage.playerTeam != playerTeam)
     {
         Debug.Log("PlayerMovement component found on: " + hit.transform.name);
         playerMovementDamage.ApplyDamage(fireDamage);

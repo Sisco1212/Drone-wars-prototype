@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     // public Transform child;
     // private Quaternion initialTargetFollowRotation;
     PlayerControllerManager playerControllerManager;
+    public int playerTeam;
 
     [Header("Health system")]
     public float maxHealth = 150.0f;
@@ -62,6 +63,12 @@ public class PlayerMovement : MonoBehaviour
         {
             Destroy(droneRb);
             Destroy(uiCanvas);
+        }
+        
+        if (view.Owner.CustomProperties.ContainsKey("Team"))
+        {
+            int team = (int)view.Owner.CustomProperties["Team"];
+            playerTeam = team;
         }
     }
     public void HandleAllMovements()
@@ -253,6 +260,7 @@ public class PlayerMovement : MonoBehaviour
     void Die()
     {
         playerControllerManager.Die();
+        ScoreBoard.Instance.PlayerDied(playerTeam);
     }
 
 }

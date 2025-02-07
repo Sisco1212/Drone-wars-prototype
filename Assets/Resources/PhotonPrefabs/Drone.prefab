@@ -26447,6 +26447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upForce: 0
   currentYRotation: 0
+  playerTeam: 0
   maxHealth: 150
   currentHealth: 0
   healthBar: {fileID: 7486600204651461040}
@@ -26535,6 +26536,7 @@ MonoBehaviour:
   nextFireTime: 0
   firePoint: {fileID: 3604693335414531698}
   isShooting: 0
+  playerTeam: 0
   maxAmmo: 30
   reloadTime: 1.5
   isReloading: 0
@@ -31940,6 +31942,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upForce: 0
   currentYRotation: 0
+  playerTeam: 0
   maxHealth: 150
   currentHealth: 0
   healthBar: {fileID: 7486600204651461040}
@@ -31978,6 +31981,7 @@ MonoBehaviour:
   nextFireTime: 0
   firePoint: {fileID: 3604693335414531698}
   isShooting: 0
+  playerTeam: 0
   maxAmmo: 30
   reloadTime: 1.5
   isReloading: 0
